@@ -15,7 +15,7 @@ export class StravaAthleteService {
       "client_secret" : process.env.STRAVA_CLIENT_SECRET,
       "redirect_uri": "http://localhost:3000/strava-athlete/auth"
     })
-    const url=strava.oauth.getRequestAccessURL({})
+    const url=strava.oauth.getRequestAccessURL({scope:"profile:read_all"})
     return url;
   }
 }
