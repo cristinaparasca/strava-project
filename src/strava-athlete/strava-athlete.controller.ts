@@ -1,19 +1,21 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { StravaAthleteService } from './strava-athlete.service';
-import { CreateStravaAthleteDto } from './dto/create-strava-athlete.dto';
-import { UpdateStravaAthleteDto } from './dto/update-strava-athlete.dto';
 
 @Controller('strava-athlete')
 export class StravaAthleteController {
   constructor(private readonly stravaAthleteService: StravaAthleteService) {}
 
-  @Get()
-  async login() {
-    return this.stravaAthleteService.login();
+  @Get(':id')
+  async login(@Param('code') code:number) {
+    return this.stravaAthleteService.refreshToken(code);
   }
   @Get('auth')
   async auth(@Query('code') code:string) {
     return this.stravaAthleteService.authorize(code);
+  }
+  @Get('heartRate/:id')
+  async heartRate(@Param('id') id:number){
+    return this.stravaAthleteService.heartRate(id);
   }
 
 }
