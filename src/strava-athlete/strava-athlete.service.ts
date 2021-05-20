@@ -54,15 +54,19 @@ export class StravaAthleteService {
       return{message:"Invalid client_id"};
     if(user.expires_at<Math.round(Date.now()/1000)){
       const auth=await strava.oauth.refreshToken(user.refresh_token);
-      await this.athletesRepository.update(user.user_id,{access_token:auth.access_token,refresh_token:auth.refresh_token,expires_at:auth.expires_at,expires_in:auth.expires_in})
+      console.log(auth);
+      user.access_token=auth.access_token;
+      user.refresh_token=auth.refresh_token;
+      user.expires_at=auth.expires_at;
+      user.expires_in=auth.expires_in;
+      await this.athletesRepository.save(user);
     }
+    return user;
   }
 
   async heartRate(id:number){
-    const user=await this.athletesRepository.findOne({user_id:id});
-    if(!user)
-      return {message:"No user with given id"};
-    await this.refreshToken(id);
+    const user=await this.refreshToken(id);
+    console.log(user);
     return await strava.athlete.listZones(user);
   }
 }
