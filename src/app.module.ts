@@ -5,9 +5,14 @@ import { AppService } from './app.service';
 import { StravaAthleteModule } from './strava-athlete/strava-athlete.module';
 import{config} from './config/orm.config'
 import { ConfigModule } from '@nestjs/config';
+import { AthleteModule } from './athlete/athlete.module';
+import { UserModule } from './user/user.module';
+import { AthleteActivitiesModule } from './athlete-activities/athlete-activities.module';
+import { ClubModule } from './club/club.module';
+import { ClubMembersModule } from './club-members/club-members.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(),TypeOrmModule.forRoot(config),StravaAthleteModule],
+  imports: [ConfigModule.forRoot(),TypeOrmModule.forRoot(config),StravaAthleteModule, UserModule, AthleteModule, AthleteActivitiesModule, ClubModule, ClubMembersModule],
   controllers: [AppController],
   providers: [AppService],
 })

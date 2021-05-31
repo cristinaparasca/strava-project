@@ -12,9 +12,11 @@ export class StravaAthleteService {
   ){}
 
   async authorize(code:string){
+    console.log(1);
     const auth=await strava.oauth.getToken(code);
+    console.log(auth);
     const user={
-      client_id:auth.athlete.id,
+      user_id:auth.athlete.id,
       access_token:auth.access_token,
       refresh_token:auth.refresh_token,
       expires_at:auth.expires_at,
@@ -40,12 +42,13 @@ export class StravaAthleteService {
 
   async login() {
     console.log(Math.round(Date.now()/1000))
+    console.log(process.env.STRAVA_CLIENT_ID)
     strava.config({
       "client_id": process.env.STRAVA_CLIENT_ID,
       "client_secret" : process.env.STRAVA_CLIENT_SECRET,
       "redirect_uri": "http://localhost:3000/strava-athlete/auth"
     })
-    const ceva=strava.oauth.getRequestAccessURL({scope:"profile:read_all"})
+    const ceva=strava.oauth.getRequestAccessURL({scope:"profile:read_all,"})
     return ceva;
   }
   async refreshToken(id:number){
@@ -69,4 +72,13 @@ export class StravaAthleteService {
     console.log(user);
     return await strava.athlete.listZones(user);
   }
+
+  async activities(id:number){
+    const user=await this.athletesRepository.findOne({user_id:id});
+    if(!user){
+      return{message:"Invalid client_id"};
+    }
+    return await strava.clubs.listActivities({access_token:user.access_token,id:207985});
+  }
+
 }
