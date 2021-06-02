@@ -12,9 +12,9 @@ export class ClubController {
     return this.clubService.create(Number(process.env.ASSIST_CLUB_ID),user_id);
   }
 
-  @Get()
-  findAll() {
-    return this.clubService.findAll();
+  @Get('/members/:user_id')
+  async findMembers(@Param('user_id') user_id: number) {
+    return this.clubService.getMembers(Number(process.env.ASSIST_CLUB_ID),user_id);
   }
 
   @Get(':id')

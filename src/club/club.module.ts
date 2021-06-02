@@ -8,10 +8,11 @@ import { UserService } from 'src/user/user.service';
 import { UserModule } from 'src/user/user.module';
 import { AthleteService } from 'src/athlete/athlete.service';
 import { AthleteActivitiesService } from 'src/athlete-activities/athlete-activities.service';
+import { ClubMembersModule } from 'src/club-members/club-members.module';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Club,User])],
+  imports:[TypeOrmModule.forFeature([Club,User]),UserModule,ClubMembersModule],
   controllers: [ClubController],
-  providers: [ClubService,UserService,AthleteService,AthleteActivitiesService]
+  providers: [ClubService]
 })
 export class ClubModule {}

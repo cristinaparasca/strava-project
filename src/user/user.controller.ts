@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Res } from '@nestjs/common';
 import { UserService } from './user.service';
 
 
@@ -11,8 +11,8 @@ export class UserController {
     return this.userService.authorize(code);
   }
   @Get()
-  async login() {
-    return this.userService.login();
+  async login(@Res() res) {
+    return res.redirect(await this.userService.login());
   }
   @Get('heartRate/:id')
   async heartRate(@Param('id') id:number){

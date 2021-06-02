@@ -12,6 +12,7 @@ import { AthleteActivity } from 'src/athlete-activities/entities/athlete-activit
 @Module({
   imports:[TypeOrmModule.forFeature([User,Athlete,AthleteActivity])],
   controllers: [UserController],
-  providers: [UserService,AthleteService,AthleteActivitiesService]
+  providers: [UserService,AthleteService,AthleteActivitiesService],
+  exports:[UserService]
 })
 export class UserModule {}

@@ -1,6 +1,6 @@
 import { BaseEntity } from "src/base.entity";
 import { Club } from "src/club/entities/club.entity";
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from "typeorm";
 
 @Entity()
 export class ClubMember extends BaseEntity{
@@ -10,7 +10,10 @@ export class ClubMember extends BaseEntity{
     lastname: string
     @Column({nullable:true})
     membership: string
-    @OneToOne(()=>Club)
-    @JoinColumn()
+    @Column({nullable:true})
+    admin:boolean
+    @Column({nullable:true})
+    owner:boolean
+    @ManyToOne(()=>Club, club=>club.members)
     club:Club
 }

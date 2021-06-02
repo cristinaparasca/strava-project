@@ -1,8 +1,15 @@
 import { BaseEntity } from "src/base.entity";
-import { Column, Entity } from "typeorm";
+import { ClubMember } from "src/club-members/entities/club-member.entity";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 
 @Entity()
-export class Club extends BaseEntity{
+export class Club{
+    @PrimaryColumn()
+    id:number;
+    @CreateDateColumn({nullable:true})
+    createdAt?:Date;
+    @CreateDateColumn({nullable:true})
+    updatedAt?:Date;
     @Column({nullable:true})
     name: string
     @Column({nullable:true})
@@ -25,4 +32,6 @@ export class Club extends BaseEntity{
     member_count: number
     @Column({nullable:true})
     following_count: number
+    @OneToMany(()=>ClubMember,clubmember=>clubmember.club,{cascade:true,onUpdate: 'CASCADE'})
+    members:ClubMember[]
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AthleteActivitiesService } from 'src/athlete-activities/athlete-activities.service';
 import { AthleteActivity } from 'src/athlete-activities/entities/athlete-activity.entity';
@@ -22,20 +22,17 @@ export class UserService {
     const auth=await strava.oauth.getToken(code);
     let athlete=new Athlete();
       athlete=auth.athlete;
-      console.log(auth);
       athlete=await this.athletesRepository.create(athlete)
-      console.log(1);
       const user={
         token_type:auth.token_type,
         access_token:auth.access_token,
         refresh_token:auth.refresh_token,
         expires_at:auth.expires_at,
         expires_in:auth.expires_in,
-        athlete:athlete
+        athlete:auth.athlete
       }
     const exists=await this.usersRepository.findOne({access_token:auth.access_token})
-    if(!exists){
-      
+    if(!exists){   
       const saved=await this.usersRepository.save(user);
       if(Object.keys(saved).length===0)
         return {message:"Some error ocured at saving athlete"}
@@ -46,7 +43,7 @@ export class UserService {
     return updated;
   }
 
-  async login() {
+  async login() :Promise<string>{
     console.log(Math.round(Date.now()/1000))
     console.log(process.env.STRAVA_CLIENT_ID)
     strava.config({
@@ -70,15 +67,12 @@ export class UserService {
       activity.athlete=athlete
       await this.activitiesRepository.create(activity);
     }
-    //athlete.activities=activities;
-    //console.log(athlete.activities);
-    //const updated=await this.athletesRepository.update(athlete.id,athlete);
     return ;
   }
   async refreshToken(id:number){
     const user=await this.usersRepository.findOne({id:id});
     if(!user)
-      return{message:"Invalid client_id"};
+      throw new NotFoundException("Invalid user_id");
     if(user.expires_at<Math.round(Date.now()/1000)){
       const auth=await strava.oauth.refreshToken(user.refresh_token);
       console.log(auth);
