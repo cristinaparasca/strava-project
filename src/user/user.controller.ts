@@ -14,12 +14,4 @@ export class UserController {
   async login(@Res() res) {
     return res.redirect(await this.userService.login());
   }
-  @Get('heartRate/:id')
-  async heartRate(@Param('id') id:number){
-    return this.userService.heartRate(id);
-  }
-  @Get('activities/:id')
-  async activities(@Param('id') id:number){
-    return this.userService.activities(id);
-  }
 }

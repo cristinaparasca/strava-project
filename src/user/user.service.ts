@@ -1,7 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AthleteActivitiesService } from 'src/athlete-activities/athlete-activities.service';
-import { AthleteActivity } from 'src/athlete-activities/entities/athlete-activity.entity';
 import { AthleteService } from 'src/athlete/athlete.service';
 import { Athlete } from 'src/athlete/entities/athlete.entity';
 import { Repository } from 'typeorm';
@@ -13,8 +11,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private usersRepository:Repository<User>,
-    private athletesRepository:AthleteService,
-    private activitiesRepository:AthleteActivitiesService
+    private athletesRepository:AthleteService
   ){}
 
   async authorize(code:string){
@@ -38,8 +35,7 @@ export class UserService {
         return {message:"Some error ocured at saving athlete"}
       return saved;
     }
-    
-    const updated=await this.usersRepository.update(exists.id,user)
+    const updated=await this.usersRepository.update(exists.id,auth)
     return updated;
   }
 
@@ -51,26 +47,12 @@ export class UserService {
       "client_secret" : process.env.STRAVA_CLIENT_SECRET,
       "redirect_uri": "http://localhost:3000/user/auth"
     })
-    const ceva=strava.oauth.getRequestAccessURL({scope:"profile:read_all,activity:read_all"})
+    const ceva=strava.oauth.getRequestAccessURL({scope:"profile:write,profile:read_all,read_all,activity:read_all,activity:write"})
     return ceva;
   }
-  async activities(athlete_id:number){
-    let athlete=new Athlete();
-    athlete=await this.athletesRepository.findOne(athlete_id);
-    let exist=await this.usersRepository.findOne({athlete:athlete})
-    const user=await this.refreshToken(exist.id) 
-    let activities= [];
-    activities=await strava.athlete.listActivities(user);
-    for(let i=0;i<activities.length;i++){
-      let activity= new AthleteActivity;
-      activity=activities[i];
-      activity.athlete=athlete
-      await this.activitiesRepository.create(activity);
-    }
-    return ;
-  }
-  async refreshToken(id:number){
-    const user=await this.usersRepository.findOne({id:id});
+
+  async refreshToken(id:string){
+    const user=await this.usersRepository.findOne({id:id},{relations:['athlete']});
     if(!user)
       throw new NotFoundException("Invalid user_id");
     if(user.expires_at<Math.round(Date.now()/1000)){
@@ -83,20 +65,6 @@ export class UserService {
       await this.usersRepository.save(user);
     }
     return user;
-  }
-
-  async heartRate(id:number){
-    const user=await this.refreshToken(id);
-    console.log(user);
-    return await strava.athlete.listZones(user);
-  }
-
-  async Clubactivities(id:number){
-    const user=await this.usersRepository.findOne({id:id});
-    if(!user){
-      return{message:"Invalid id"};
-    }
-    return await strava.clubs.listActivities({access_token:user.access_token,id:207985});
   }
 
 }

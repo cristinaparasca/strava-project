@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Put } from '@nestjs/common';
 import { AthleteActivitiesService } from './athlete-activities.service';
 import { CreateAthleteActivityDto } from './dto/create-athlete-activity.dto';
 import { UpdateAthleteActivityDto } from './dto/update-athlete-activity.dto';
@@ -8,24 +8,24 @@ import { AthleteActivity } from './entities/athlete-activity.entity';
 export class AthleteActivitiesController {
   constructor(private readonly athleteActivitiesService: AthleteActivitiesService) {}
 
-  @Post()
-  create(@Body() athleteActivity: AthleteActivity) {
-    return this.athleteActivitiesService.create(athleteActivity);
+  @Post(':user_id')
+  async create(@Param('user_id')user_id:string,@Body() athleteActivity: CreateAthleteActivityDto) {
+    this.athleteActivitiesService.createStravaActivity(user_id,athleteActivity);
   }
 
-  @Get()
-  findAll() {
-    return this.athleteActivitiesService.findAll();
+  @Get('strava/:user_id')
+  async findAll(@Param('user_id')user_id:string) {
+    return this.athleteActivitiesService.activities(user_id);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.athleteActivitiesService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return this.athleteActivitiesService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() athleteActivity: AthleteActivity) {
-    return this.athleteActivitiesService.update(+id, athleteActivity);
+  @Put(':user_id/:activity_id')
+  async update(@Param('user_id') user_id: string,@Param('activity_id') activity_id: string, @Body() athleteActivity: UpdateAthleteActivityDto) {
+    return this.athleteActivitiesService.updateStravaActivity(user_id,activity_id, athleteActivity);
   }
 
   @Delete(':id')

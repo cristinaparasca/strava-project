@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { StravaAthleteModule } from './strava-athlete/strava-athlete.module';
 import{config} from './config/orm.config'
 import { ConfigModule } from '@nestjs/config';
 import { AthleteModule } from './athlete/athlete.module';
@@ -12,7 +11,7 @@ import { ClubModule } from './club/club.module';
 import { ClubMembersModule } from './club-members/club-members.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(),TypeOrmModule.forRoot(config),StravaAthleteModule, UserModule, AthleteModule, AthleteActivitiesModule, ClubModule, ClubMembersModule],
+  imports: [ConfigModule.forRoot(),TypeOrmModule.forRoot(config), UserModule, AthleteModule, AthleteActivitiesModule, ClubModule, ClubMembersModule],
   controllers: [AppController],
   providers: [AppService],
 })

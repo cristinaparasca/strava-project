@@ -20,7 +20,7 @@ export class AthleteService {
   }
   
   async findAll() {
-    return `This action returns all athlete`;
+    return await this.athletesRepository.find({relations:['activities']});
   }
   async findOne(id:number) {
     const athlete=await this.athletesRepository.findOne(id);
@@ -30,11 +30,6 @@ export class AthleteService {
     const athlet=await this.athletesRepository.findOne(id);
     await this.athletesRepository.merge(athlet, athlete);
     await this.athletesRepository.save(athlet)
-    /*const updateResult=await this.athletesRepository.update(id,athlete);
-        if(updateResult.affected===0){
-            throw new NotFoundException(`No athlete whith id=${id}!`)
-        }
-        return ({message:"Athlete updated succesfully"})*/
   }
 
 }

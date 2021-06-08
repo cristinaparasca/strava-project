@@ -8,12 +8,12 @@ export class ClubController {
   constructor(private readonly clubService: ClubService) {}
 
   @Post(':user_id')
-  create(@Param('user_id') user_id: number) {
+  create(@Param('user_id') user_id: string) {
     return this.clubService.create(Number(process.env.ASSIST_CLUB_ID),user_id);
   }
 
   @Get('/members/:user_id')
-  async findMembers(@Param('user_id') user_id: number) {
+  async findMembers(@Param('user_id') user_id: string) {
     return this.clubService.getMembers(Number(process.env.ASSIST_CLUB_ID),user_id);
   }
 

@@ -13,7 +13,7 @@ export class AthleteActivity{
     athlete:Athlete
     @Column()
     name:string
-    @Column()
+    @Column('float4',{nullable:true})
     distance:number
     @Column()
     moving_time:number

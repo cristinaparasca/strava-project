@@ -19,7 +19,7 @@ export class ClubService {
     private userService:UserService,
     private clubMemberRepository:ClubMembersService
   ){}
-  async create(club_id: number,user_id:number) {
+  async create(club_id: number,user_id:string) {
     //const user= await this.userRepository.findOne(user_id);
     let user=await this.userService.refreshToken(user_id);
     if(user==null)
@@ -29,7 +29,7 @@ export class ClubService {
     return clubs;
     
   }
-  async getMembers(club_id: number,user_id:number){
+  async getMembers(club_id: number,user_id:string){
     let user=await this.userService.refreshToken(user_id);
     if(user==null)
       throw new NotFoundException("No user with given id!");

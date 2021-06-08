@@ -1,6 +1,4 @@
-import { AthleteActivitiesModule } from "src/athlete-activities/athlete-activities.module";
 import { AthleteActivity } from "src/athlete-activities/entities/athlete-activity.entity";
-import { BaseEntity } from "src/base.entity";
 import { Column, CreateDateColumn, Entity, JoinColumn, OneToMany, PrimaryColumn } from "typeorm";
 
 @Entity()
